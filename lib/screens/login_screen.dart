@@ -3,6 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:learn/model/Account.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:learn/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
@@ -19,6 +22,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _passwordFieldKey = GlobalKey<FormBuilderFieldState>();
   bool _isLoading = false;
   bool remember = false;
+  String errorMessage = '';
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   AutovalidateMode autoValidate = AutovalidateMode.onUserInteraction;
@@ -29,6 +33,9 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController.dispose();
     super.dispose();
   }
+
+  Account myAccount =
+      Account(id: 1, email: 'trongnham2003@gmail.com', password: '123123');
 
   @override
   Widget build(BuildContext context) {
@@ -44,8 +51,31 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() {
           _isLoading = true;
         });
-        await Future.delayed(const Duration(seconds: 4));
+        await Future.delayed(const Duration(seconds: 3));
+        if (emailController.text == myAccount.email &&
+            passwordController.text == myAccount.password) {
+          Fluttertoast.showToast(
+            msg: 'Login Success',
+            toastLength: Toast.LENGTH_SHORT,
+            backgroundColor: const Color.fromARGB(255, 237, 94, 84),
+            textColor: Colors.white,
+            webPosition: 'top',
+          );
+          if (!mounted) return;
+          await Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const HomeScreen()));
+        } else {
+          Fluttertoast.showToast(
+            msg: 'Email has not been register!!',
+            toastLength: Toast.LENGTH_SHORT,
+            backgroundColor: Colors.amber,
+            textColor: Colors.white,
+            gravity: ToastGravity.TOP,
+            timeInSecForIosWeb: 5,
+          );
+        }
       } catch (e) {
+        // logger
       } finally {
         setState(() {
           _isLoading = false;
@@ -59,6 +89,14 @@ class _LoginScreenState extends State<LoginScreen> {
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: FormBuilder(
+                enabled: !_isLoading,
+                onChanged: () {
+                  if (errorMessage.isNotEmpty) {
+                    setState(() {
+                      errorMessage = '';
+                    });
+                  }
+                },
                 key: _formKey,
                 child: Column(
                   children: [
