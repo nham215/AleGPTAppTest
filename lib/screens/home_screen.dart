@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:learn/screens/login_screen.dart';
+import 'package:learn/model/Message.dart';
+import 'package:learn/screens/layout/Drawer.dart';
+import 'package:learn/screens/layout/InputMessage.dart';
+import 'package:learn/screens/layout/Message.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
@@ -16,71 +19,51 @@ class _HomeScreenState extends State<HomeScreen> {
     _scaffoldKey.currentState?.openDrawer();
   }
 
+  List<MessageModel> listMessage = [
+    MessageModel(
+        chatId: 1,
+        content: 'User Come up with 5 concepts for a retro-style arcade game',
+        senderType: 'user'),
+    MessageModel(
+        chatId: 1,
+        content:
+            'Galactic Groove Defender: Navigate a spaceship through a neon-infused galaxy, defending against waves of pixelated alien invaders with funky, retro-inspired music influencing the gameplay.',
+        senderType: 'bot'),
+    MessageModel(
+        chatId: 1,
+        content: 'User Come up with 5 concepts for a retro-style arcade game',
+        senderType: 'user'),
+    MessageModel(
+        chatId: 1,
+        content:
+            'Pixel Prowler Puzzle Quest: Embark on a puzzle-solving adventure in a cyberpunk cityscape, where players must navigate through mazes, avoiding enemies and unlocking secret pathways using classic block-pushing mechanics.',
+        senderType: 'bot'),
+    MessageModel(
+        chatId: 1,
+        content: 'User Come up with 5 concepts for a retro-style arcade game',
+        senderType: 'user'),
+    MessageModel(
+        chatId: 1,
+        content:
+            'Time-Warp Warriors: Travel through different eras, battling foes in a side-scrolling beat \'em up. Fight dinosaurs in prehistoric times, encounter robots in a futuristic city, and duel with knights in medieval landscapes, all with a nostalgic pixelated aesthetic.',
+        senderType: 'bot'),
+    MessageModel(
+        chatId: 1,
+        content: 'User Come up with 5 concepts for a retro-style arcade game',
+        senderType: 'user'),
+    MessageModel(chatId: 1, content: 'Hi there!', senderType: 'bot'),
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Colors.black,
-      drawer: Drawer(
-          backgroundColor: Colors.black,
-          child: Container(
-            decoration: const BoxDecoration(
-              color: Color(0xFF131619),
-            ),
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
-              children: [
-                Container(
-                  child: const ListTile(
-                    title: Text(
-                      'Trong Nham',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18.0,
-                      ),
-                    ),
-                    leading: CircleAvatar(
-                      backgroundColor: Colors.black,
-                      child: Icon(
-                        Icons.logo_dev_outlined,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
-                ),
-                const ListTile(
-                  title: Text(
-                    'Item 2',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-                ListTile(
-                  title: const Text(
-                    'Log out',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
-                    ),
-                  ),
-                  leading: const CircleAvatar(
-                    backgroundColor: Colors.black,
-                    child: Icon(
-                      Icons.login_outlined,
-                      color: Colors.white,
-                    ),
-                  ),
-                  onTap: () async {
-                    await Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const LoginScreen()));
-                  },
-                ),
-              ],
-            ),
-          )),
+      bottomSheet: const InputMessage(),
+      drawer: const Drawer(
+        backgroundColor: Colors.black,
+        child: DrawerUI(),
+      ),
       body: SafeArea(
           child: Container(
         // child: FormBuilder(
@@ -115,43 +98,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ]),
             Expanded(
-              child: ListView(
-                padding: const EdgeInsets.symmetric(vertical: 20),
-                physics: const BouncingScrollPhysics(),
-                children: const [
-                  Text('data'),
-                ],
-              ),
-            ),
-            TextField(
-              style: const TextStyle(
-                color: Color(0xFFFAFAFA),
-              ),
-              decoration: InputDecoration(
-                contentPadding:
-                    const EdgeInsets.symmetric(vertical: 12.0, horizontal: 12),
-                suffixIcon: GestureDetector(
-                  onTap: () {},
-                  child: const Icon(
-                    Icons.arrow_circle_up_outlined,
-                    color: Color(0xFF1E8F8E),
-                  ),
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.fromLTRB(10, 20, 10, 40),
+                scrollDirection: Axis.vertical,
+                child: Column(
+                  children:
+                      listMessage.map((e) => Message(message: e)).toList(),
                 ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: const BorderSide(color: Color(0xFF3D3737)),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  borderSide: const BorderSide(
-                    color: Color(0xFF1E8F8E),
-                    width: 2.0,
-                  ),
-                ),
-                hintStyle: const TextStyle(
-                  color: Colors.grey,
-                ),
-                hintText: 'Message chat...',
               ),
             ),
           ],
