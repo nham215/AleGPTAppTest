@@ -1,44 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:learn/routes.dart';
+import 'package:learn/screens/home_screen.dart';
 import 'package:learn/screens/login_screen.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
-
-enum Person { tin, hoa, phuong }
-// Person.tin.name
-// Person.values.length
-// Person.values[0]
-// Person.values.first
-// Person.values.last
-// Person.values.isEmpty
-// Person.values.isNotEmpty
-
-// Person.values.forEach((e){
-//  print(e.name)
-// })
-
-var numbers = Iterable.generate(10);
-// numbers.forEach((number){
-//  print(number);
-// })
-
-// for (int i = 0; i < numbers.lenth; i++) {
-//  print(numbers.elementAt(i));
-// }
-
-// for (var numver in numbers) {
-//  print(number);
-// }
-
-var list = [];
-// list.add(1); //them phan tu
-
-List<int> listNumber = [];
-// listNumber.add(2);
-
-var map = {};
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -54,7 +28,28 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const LoginScreen(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasError) {
+            return Text(snapshot.error.toString());
+          }
+
+          if (snapshot.connectionState == ConnectionState.active) {
+            if (snapshot.data == null) {
+              return const LoginScreen();
+            } else {
+              // FirebaseAuth.instance.currentUser!.displayName!
+              return const HomeScreen();
+            }
+          }
+
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        },
+      ),
+      // home: const LoginScreen(),
     );
   }
 }

@@ -1,8 +1,10 @@
 // ignore_for_file: avoid_unnecessary_containers
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:learn/model/Account.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:learn/screens/home_screen.dart';
@@ -26,6 +28,15 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   AutovalidateMode autoValidate = AutovalidateMode.onUserInteraction;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+  User? _user;
+
+  @override
+  void initState() {
+    super.initState();
+    // _auth.authStateChanges().listen((event) { })
+  }
 
   @override
   void dispose() {
@@ -81,6 +92,20 @@ class _LoginScreenState extends State<LoginScreen> {
           _isLoading = false;
         });
       }
+    }
+
+    signInWithGoogle() async {
+      GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+      AuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      // UserCredential user =
+      await FirebaseAuth.instance.signInWithCredential(credential);
     }
 
     return Scaffold(
@@ -271,7 +296,9 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 48,
                               margin: const EdgeInsets.symmetric(vertical: 40),
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  signInWithGoogle();
+                                },
                                 style: ElevatedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8.0),

@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:learn/screens/login_screen.dart';
 
 class DrawerUI extends StatelessWidget {
@@ -82,8 +84,10 @@ class DrawerUI extends StatelessWidget {
               ),
             ),
             onTap: () async {
-              await Navigator.push(context,
-                  MaterialPageRoute(builder: (context) => const LoginScreen()));
+              await GoogleSignIn().signOut();
+              FirebaseAuth.instance.signOut();
+              // await Navigator.push(context,
+              //     MaterialPageRoute(builder: (context) => const LoginScreen()));
             },
           ),
         ],
