@@ -23,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final _emailFieldKey = GlobalKey<FormBuilderFieldState>();
   final _passwordFieldKey = GlobalKey<FormBuilderFieldState>();
   bool _isLoading = false;
-  bool remember = false;
+  bool remember = true;
   String errorMessage = '';
   final emailController = TextEditingController();
   final passwordController = TextEditingController();

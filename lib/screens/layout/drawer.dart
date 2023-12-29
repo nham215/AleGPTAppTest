@@ -72,28 +72,44 @@ class _DrawerUIState extends State<DrawerUI> {
               ],
             ),
           ),
-          ListTile(
-            title: const Text(
-              'Log out',
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
+          Column(
+            children: [
+              ListTile(
+                title: const Text(
+                  'Log out',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0,
+                  ),
+                ),
+                leading: const CircleAvatar(
+                  backgroundColor: Colors.black,
+                  child: Icon(
+                    Icons.logout_outlined,
+                    color: Colors.white,
+                  ),
+                ),
+                onTap: () async {
+                  await GoogleSignIn().signOut();
+                  FirebaseAuth.instance.signOut();
+                  // await Navigator.push(context,
+                  //     MaterialPageRoute(builder: (context) => const LoginScreen()));
+                },
               ),
-            ),
-            leading: const CircleAvatar(
-              backgroundColor: Colors.black,
-              child: Icon(
-                Icons.logout_outlined,
-                color: Colors.white,
-              ),
-            ),
-            onTap: () async {
-              await GoogleSignIn().signOut();
-              FirebaseAuth.instance.signOut();
-              // await Navigator.push(context,
-              //     MaterialPageRoute(builder: (context) => const LoginScreen()));
-            },
+              const Row(
+                children: [
+                  Text(
+                    'Mode',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14.0,
+                    ),
+                  )
+                ],
+              )
+            ],
           ),
         ],
       ),
