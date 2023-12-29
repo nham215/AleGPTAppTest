@@ -39,8 +39,8 @@ class MyApp extends StatelessWidget {
             if (snapshot.data == null) {
               return const LoginScreen();
             } else {
-              // FirebaseAuth.instance.currentUser!.displayName!
-              return const HomeScreen();
+              return HomeScreen(
+                  name: FirebaseAuth.instance.currentUser!.displayName!);
             }
           }
 

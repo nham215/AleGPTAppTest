@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:learn/model/Message.dart';
-import 'package:learn/screens/layout/Drawer.dart';
-import 'package:learn/screens/layout/InputMessage.dart';
-import 'package:learn/screens/layout/Message.dart';
+import 'package:learn/model/message.dart';
+import 'package:learn/screens/layout/drawer.dart';
+import 'package:learn/screens/layout/input_message.dart';
+import 'package:learn/screens/layout/message.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
-  const HomeScreen({super.key});
+
+  final String name;
+  const HomeScreen({Key? key, required this.name}) : super(key: key);
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -60,9 +62,9 @@ class _HomeScreenState extends State<HomeScreen> {
       key: _scaffoldKey,
       backgroundColor: Colors.black,
       bottomSheet: const InputMessage(),
-      drawer: const Drawer(
+      drawer: Drawer(
         backgroundColor: Colors.black,
-        child: DrawerUI(),
+        child: DrawerUI(name: widget.name),
       ),
       body: SafeArea(
           child: Container(

@@ -5,9 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:learn/model/Account.dart';
+import 'package:learn/helpers/loading.dart';
+import 'package:learn/model/account.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:learn/screens/home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
@@ -28,15 +28,6 @@ class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   AutovalidateMode autoValidate = AutovalidateMode.onUserInteraction;
-
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  User? _user;
-
-  @override
-  void initState() {
-    super.initState();
-    // _auth.authStateChanges().listen((event) { })
-  }
 
   @override
   void dispose() {
@@ -59,9 +50,9 @@ class _LoginScreenState extends State<LoginScreen> {
           });
           return;
         }
-        setState(() {
-          _isLoading = true;
-        });
+        // setState(() {
+        //   _isLoading = true;
+        // });
         await Future.delayed(const Duration(seconds: 3));
         if (emailController.text == myAccount.email &&
             passwordController.text == myAccount.password) {
@@ -73,8 +64,10 @@ class _LoginScreenState extends State<LoginScreen> {
             webPosition: 'top',
           );
           if (!mounted) return;
-          await Navigator.push(context,
-              MaterialPageRoute(builder: (context) => const HomeScreen()));
+          // await Navigator.push(
+          //     context,
+          //     MaterialPageRoute(
+          //         builder: (context) => const HomeScreen(name: 'Nham 215')));
         } else {
           Fluttertoast.showToast(
             msg: 'Email has not been register!!',
@@ -85,8 +78,6 @@ class _LoginScreenState extends State<LoginScreen> {
             timeInSecForIosWeb: 5,
           );
         }
-      } catch (e) {
-        // logger
       } finally {
         setState(() {
           _isLoading = false;
@@ -95,17 +86,25 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     signInWithGoogle() async {
-      GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      try {
+        setState(() {
+          _isLoading = true;
+        });
+        GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+        GoogleSignInAuthentication? googleAuth =
+            await googleUser?.authentication;
 
-      GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+        AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: googleAuth?.accessToken,
+          idToken: googleAuth?.idToken,
+        );
 
-      AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
-      );
-
-      // UserCredential user =
-      await FirebaseAuth.instance.signInWithCredential(credential);
+        await FirebaseAuth.instance.signInWithCredential(credential);
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
     }
 
     return Scaffold(
@@ -309,11 +308,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Image.asset(
-                                      'assets/images/google.png',
-                                      height: 24,
-                                      width: 24,
-                                    ),
+                                    _isLoading
+                                        ? const LoadingUI()
+                                        : Image.asset(
+                                            'assets/images/google.png',
+                                            height: 24,
+                                            width: 24,
+                                          ),
                                     const SizedBox(width: 8),
                                     const Text(
                                       'Sign In with Google',
@@ -379,24 +380,13 @@ class _LoginScreenState extends State<LoginScreen> {
                                   ),
                                   backgroundColor: const Color(0xFF1E8F8E),
                                 ),
-                                child: _isLoading
-                                    ? const SizedBox(
-                                        width: 24,
-                                        height: 24,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                  Colors.white),
-                                        ),
-                                      )
-                                    : const Text(
-                                        'Login',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                        ),
-                                      ),
+                                child: const Text(
+                                  'Login',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                ),
                               ),
                             ),
                             Container(

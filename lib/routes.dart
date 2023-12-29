@@ -4,5 +4,5 @@ import 'package:learn/screens/login_screen.dart';
 
 Map<String, Widget Function(BuildContext)> routes = {
   LoginScreen.routeName: (ctx) => const LoginScreen(),
-  HomeScreen.routeName: (ctx) => const HomeScreen(),
+  HomeScreen.routeName: (ctx) => const HomeScreen(name: ''),
 };

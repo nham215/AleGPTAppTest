@@ -1,11 +1,16 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:learn/screens/login_screen.dart';
 
-class DrawerUI extends StatelessWidget {
-  const DrawerUI({super.key});
+class DrawerUI extends StatefulWidget {
+  final String name;
+  const DrawerUI({Key? key, required this.name}) : super(key: key);
 
+  @override
+  State<DrawerUI> createState() => _DrawerUIState();
+}
+
+class _DrawerUIState extends State<DrawerUI> {
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -21,16 +26,16 @@ class DrawerUI extends StatelessWidget {
               children: [
                 Container(
                   margin: const EdgeInsets.only(bottom: 20),
-                  child: const ListTile(
+                  child: ListTile(
                     title: Text(
-                      'Trong Nham',
-                      style: TextStyle(
+                      widget.name,
+                      style: const TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 18.0,
                       ),
                     ),
-                    leading: CircleAvatar(
+                    leading: const CircleAvatar(
                       backgroundColor: Colors.black,
                       child: Icon(
                         Icons.logo_dev_outlined,

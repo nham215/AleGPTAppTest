@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:learn/model/Message.dart';
+import 'package:learn/model/message.dart';
 
 class Message extends StatefulWidget {
   final MessageModel message;
