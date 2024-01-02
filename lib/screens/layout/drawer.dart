@@ -75,6 +75,8 @@ class _DrawerUIState extends State<DrawerUI> {
           Column(
             children: [
               ListTile(
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
                 title: const Text(
                   'Log out',
                   style: TextStyle(
@@ -87,7 +89,7 @@ class _DrawerUIState extends State<DrawerUI> {
                   backgroundColor: Colors.black,
                   child: Icon(
                     Icons.logout_outlined,
-                    color: Colors.white,
+                    color: Colors.red,
                   ),
                 ),
                 onTap: () async {
@@ -97,17 +99,45 @@ class _DrawerUIState extends State<DrawerUI> {
                   //     MaterialPageRoute(builder: (context) => const LoginScreen()));
                 },
               ),
-              const Row(
-                children: [
-                  Text(
-                    'Mode',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14.0,
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text(
+                      'Switch mode: ',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 14.0,
+                      ),
                     ),
-                  )
-                ],
+                    Row(
+                      children: [
+                        const Icon(
+                          Icons.light_mode_outlined,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Container(
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color.fromRGBO(255, 255, 255, 0.1),
+                          ),
+                          child: const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Icon(
+                              Icons.dark_mode_outlined,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               )
             ],
           ),

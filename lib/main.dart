@@ -4,6 +4,7 @@ import 'package:learn/routes.dart';
 import 'package:learn/screens/home_screen.dart';
 import 'package:learn/screens/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:learn/theme/theme.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -21,13 +22,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'ChatGPT Ale',
       debugShowCheckedModeBanner: false,
       routes: routes,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-        useMaterial3: true,
-      ),
+      theme: darkMode,
+      darkTheme: darkMode,
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
