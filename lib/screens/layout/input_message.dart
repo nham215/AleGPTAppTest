@@ -11,7 +11,7 @@ class _InputMessageState extends State<InputMessage> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black,
+      color: Theme.of(context).colorScheme.background,
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 12),
       child: TextField(
         style: const TextStyle(
@@ -23,7 +23,7 @@ class _InputMessageState extends State<InputMessage> {
           suffixIcon: GestureDetector(
             onTap: () {},
             child: const Icon(
-              Icons.arrow_circle_up_outlined,
+              Icons.send,
               color: Color(0xFF1E8F8E),
             ),
           ),

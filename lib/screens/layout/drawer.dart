@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:learn/theme/theme_provider.dart';
+import 'package:provider/provider.dart';
 
 class DrawerUI extends StatefulWidget {
   final String name;
@@ -14,8 +16,8 @@ class _DrawerUIState extends State<DrawerUI> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
-        color: Color(0xFF131619),
+      decoration: BoxDecoration(
+        color: Theme.of(context).colorScheme.onPrimary,
       ),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
       child: Column(
@@ -29,44 +31,46 @@ class _DrawerUIState extends State<DrawerUI> {
                   child: ListTile(
                     title: Text(
                       widget.name,
-                      style: const TextStyle(
-                        color: Colors.white,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
                         fontWeight: FontWeight.bold,
                         fontSize: 18.0,
                       ),
                     ),
-                    leading: const CircleAvatar(
-                      backgroundColor: Colors.black,
+                    leading: CircleAvatar(
+                      backgroundColor: Theme.of(context).colorScheme.secondary,
                       child: Icon(
-                        Icons.logo_dev_outlined,
-                        color: Colors.white,
+                        Icons.android,
+                        color: Theme.of(context).colorScheme.background,
                       ),
                     ),
                   ),
                 ),
                 Container(
                   decoration: BoxDecoration(
-                    color: const Color(0xFF202123),
-                    borderRadius: BorderRadius.circular(
-                        8.0), // Điều chỉnh giá trị để có góc cong mong muốn
+                    color: Theme.of(context).colorScheme.onBackground,
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
-                  child: const ListTile(
+                  child: ListTile(
                     title: Text(
                       'Flutter Navigation to Login',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary),
                     ),
                   ),
                 ),
-                const ListTile(
+                ListTile(
                   title: Text(
                     'PCN Type Formatting',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary),
                   ),
                 ),
-                const ListTile(
+                ListTile(
                   title: Text(
                     'React Span Handling',
-                    style: TextStyle(color: Colors.white),
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary),
                   ),
                 ),
               ],
@@ -77,19 +81,19 @@ class _DrawerUIState extends State<DrawerUI> {
               ListTile(
                 contentPadding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                title: const Text(
+                title: Text(
                   'Log out',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.secondary,
                     fontWeight: FontWeight.bold,
                     fontSize: 18.0,
                   ),
                 ),
-                leading: const CircleAvatar(
-                  backgroundColor: Colors.black,
+                leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.onBackground,
                   child: Icon(
                     Icons.logout_outlined,
-                    color: Colors.red,
+                    color: Theme.of(context).colorScheme.secondary,
                   ),
                 ),
                 onTap: () async {
@@ -104,33 +108,54 @@ class _DrawerUIState extends State<DrawerUI> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Text(
+                    Text(
                       'Switch mode: ',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.secondary,
                         fontWeight: FontWeight.bold,
                         fontSize: 14.0,
                       ),
                     ),
                     Row(
                       children: [
-                        const Icon(
-                          Icons.light_mode_outlined,
-                          color: Colors.white,
+                        GestureDetector(
+                          onTap: () {
+                            Provider.of<ThemeProvider>(context, listen: false)
+                                .onLightMode();
+                          },
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color.fromRGBO(255, 255, 255, 0.1),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.light_mode_outlined,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
+                            ),
+                          ),
                         ),
                         const SizedBox(
                           width: 10,
                         ),
-                        Container(
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Color.fromRGBO(255, 255, 255, 0.1),
-                          ),
-                          child: const Padding(
-                            padding: EdgeInsets.all(8.0),
-                            child: Icon(
-                              Icons.dark_mode_outlined,
-                              color: Colors.white,
+                        GestureDetector(
+                          onTap: () {
+                            Provider.of<ThemeProvider>(context, listen: false)
+                                .onDarkMode();
+                          },
+                          child: Container(
+                            decoration: const BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Color.fromRGBO(255, 255, 255, 0.1),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Icon(
+                                Icons.dark_mode_outlined,
+                                color: Theme.of(context).colorScheme.secondary,
+                              ),
                             ),
                           ),
                         ),

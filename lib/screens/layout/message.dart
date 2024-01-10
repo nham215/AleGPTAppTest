@@ -21,10 +21,13 @@ class _MessageState extends State<Message> {
             CircleAvatar(
               radius: 15,
               child: widget.message.senderType == 'user'
-                  ? const Text('N')
-                  : const Icon(
-                      Icons.logo_dev_outlined,
-                      color: Colors.black,
+                  ? Icon(
+                      Icons.account_circle,
+                      color: Theme.of(context).colorScheme.secondary,
+                    )
+                  : Icon(
+                      Icons.support_agent,
+                      color: Theme.of(context).colorScheme.secondary,
                     ),
             ),
             const SizedBox(width: 15),
@@ -32,24 +35,64 @@ class _MessageState extends State<Message> {
               child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    Text(
+                      widget.message.senderType == 'user' ? 'You' : 'Mina',
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 18,
+                      ),
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 3),
                       child: Text(
-                        widget.message.senderType == 'user' ? 'You' : 'Mina',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                        widget.message.content,
+                        softWrap: true,
+                        style: TextStyle(
+                          color: Theme.of(context).colorScheme.outline,
                         ),
                       ),
                     ),
-                    Text(
-                      widget.message.content,
-                      softWrap: true,
-                      style: const TextStyle(
-                        color: Color(0xFFD1D5DB),
-                      ),
-                    ),
+                    // widget.message.senderType == 'user'
+                    //     ? Row(
+                    //         children: [
+                    //           Icon(
+                    //             Icons.edit,
+                    //             color: Theme.of(context).colorScheme.secondary,
+                    //             size: 12,
+                    //           )
+                    //         ],
+                    //       )
+                    //     : const SizedBox(),
+                    widget.message.senderType == 'bot'
+                        ? Row(
+                            children: [
+                              Icon(
+                                Icons.content_paste,
+                                color: Theme.of(context).colorScheme.secondary,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 8.0),
+                              Icon(
+                                Icons.recommend,
+                                color: Theme.of(context).colorScheme.secondary,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 8.0),
+                              Icon(
+                                Icons.recommend,
+                                color: Theme.of(context).colorScheme.secondary,
+                                size: 18,
+                              ),
+                              const SizedBox(width: 8.0),
+                              Icon(
+                                Icons.replay_outlined,
+                                color: Theme.of(context).colorScheme.secondary,
+                                size: 18,
+                              ),
+                            ],
+                          )
+                        : const SizedBox()
                   ]),
             ),
           ],

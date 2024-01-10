@@ -60,10 +60,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: _scaffoldKey,
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).colorScheme.background,
       bottomSheet: const InputMessage(),
       drawer: Drawer(
-        backgroundColor: Colors.black,
+        // backgroundColor: Theme.of(context).colorScheme.background,
         child: DrawerUI(name: widget.name),
       ),
       body: SafeArea(
@@ -79,23 +79,23 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     child: GestureDetector(
                       onTap: _openDrawer,
-                      child: const Icon(
+                      child: Icon(
                         Icons.menu,
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.secondary,
                         size: 24,
                       ),
                     ),
                   ),
-                  const Text(
+                  Text(
                     'Welcom to Mina!',
                     style: TextStyle(
-                        color: Colors.white,
+                        color: Theme.of(context).colorScheme.secondary,
                         fontSize: 20,
                         fontWeight: FontWeight.bold),
                   ),
-                  const Icon(
+                  Icon(
                     Icons.auto_fix_high_outlined,
-                    color: Colors.white,
+                    color: Theme.of(context).colorScheme.secondary,
                     size: 24,
                   ),
                 ]),

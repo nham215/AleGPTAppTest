@@ -4,7 +4,8 @@ import 'package:learn/routes.dart';
 import 'package:learn/screens/home_screen.dart';
 import 'package:learn/screens/login_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:learn/theme/theme.dart';
+import 'package:learn/theme/theme_provider.dart';
+import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -12,7 +13,10 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(
+    create: (context) => ThemeProvider(),
+    child: const MyApp(),
+  ));
 }
 
 class MyApp extends StatelessWidget {
@@ -25,8 +29,7 @@ class MyApp extends StatelessWidget {
       title: 'ChatGPT Ale',
       debugShowCheckedModeBanner: false,
       routes: routes,
-      theme: darkMode,
-      darkTheme: darkMode,
+      theme: Provider.of<ThemeProvider>(context).themeData,
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
