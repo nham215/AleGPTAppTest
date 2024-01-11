@@ -1,31 +1,40 @@
 class MessageModel {
+  int id;
   int chatId;
   String content;
   String senderType;
+  DateTime? time;
 
   MessageModel(
-      {required this.chatId, required this.content, required this.senderType});
+      {required this.id,
+      required this.chatId,
+      required this.content,
+      required this.senderType,
+      this.time});
 
   bool get isUserMessage => senderType == 'user';
 
   factory MessageModel.fromMap(Map<String, dynamic> map) {
     return MessageModel(
-      chatId: map['chatId'],
-      content: map['content'],
-      senderType: map['senderType'],
-    );
+        id: map['id'],
+        chatId: map['chatId'],
+        content: map['content'],
+        senderType: map['senderType'],
+        time: map['time']);
   }
 
   Map<String, dynamic> toMap() {
     return {
+      'id': id,
       'chatId': chatId,
       'content': content,
       'senderType': senderType,
+      'time': time,
     };
   }
 
   @override
   String toString() {
-    return 'Message{chatId: $chatId, content: $content, senderType: $senderType}';
+    return 'Message{id: $id,chatId: $chatId, content: $content, senderType: $senderType, time: $time}';
   }
 }

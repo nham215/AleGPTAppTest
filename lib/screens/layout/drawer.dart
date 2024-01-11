@@ -1,18 +1,27 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:learn/model/chat.dart';
 import 'package:learn/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 class DrawerUI extends StatefulWidget {
   final String name;
-  const DrawerUI({Key? key, required this.name}) : super(key: key);
+  final List<Chat> listChat;
+  final Function(int chatId) setChatId;
+  const DrawerUI(
+      {Key? key,
+      required this.name,
+      required this.listChat,
+      required this.setChatId})
+      : super(key: key);
 
   @override
   State<DrawerUI> createState() => _DrawerUIState();
 }
 
 class _DrawerUIState extends State<DrawerUI> {
+  int id = 0;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -46,32 +55,32 @@ class _DrawerUIState extends State<DrawerUI> {
                     ),
                   ),
                 ),
-                Container(
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.onBackground,
-                    borderRadius: BorderRadius.circular(8.0),
-                  ),
-                  child: ListTile(
-                    title: Text(
-                      'Flutter Navigation to Login',
-                      style: TextStyle(
-                          color: Theme.of(context).colorScheme.secondary),
-                    ),
-                  ),
-                ),
-                ListTile(
-                  title: Text(
-                    'PCN Type Formatting',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary),
-                  ),
-                ),
-                ListTile(
-                  title: Text(
-                    'React Span Handling',
-                    style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary),
-                  ),
+                Column(
+                  children: widget.listChat.map((e) {
+                    return Container(
+                      decoration: BoxDecoration(
+                        color: id == e.id
+                            ? Theme.of(context).colorScheme.onBackground
+                            : null,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: ListTile(
+                        onTap: () {
+                          setState(() {
+                            id = e.id!;
+                          });
+                          widget.setChatId(e.id!);
+                          Navigator.pop(context);
+                        },
+                        title: Text(
+                          e.name!,
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ],
             ),

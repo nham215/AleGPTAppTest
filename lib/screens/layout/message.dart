@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:learn/model/message.dart';
+import 'package:clipboard/clipboard.dart';
 
 class Message extends StatefulWidget {
   final MessageModel message;
@@ -10,6 +11,7 @@ class Message extends StatefulWidget {
 }
 
 class _MessageState extends State<Message> {
+  bool _isCopy = false;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -53,34 +55,60 @@ class _MessageState extends State<Message> {
                         ),
                       ),
                     ),
-                    // widget.message.senderType == 'user'
-                    //     ? Row(
-                    //         children: [
-                    //           Icon(
-                    //             Icons.edit,
-                    //             color: Theme.of(context).colorScheme.secondary,
-                    //             size: 12,
-                    //           )
-                    //         ],
-                    //       )
-                    //     : const SizedBox(),
-                    widget.message.senderType == 'bot'
+                    widget.message.senderType == 'user'
                         ? Row(
                             children: [
                               Icon(
-                                Icons.content_paste,
+                                Icons.border_color_rounded,
                                 color: Theme.of(context).colorScheme.secondary,
-                                size: 16,
+                                size: 14,
+                              )
+                            ],
+                          )
+                        : const SizedBox(),
+                    widget.message.senderType == 'bot'
+                        ? Row(
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    _isCopy = true;
+                                  });
+                                  FlutterClipboard.copy(widget.message.content)
+                                      .then((value) {
+                                    Future.delayed(const Duration(seconds: 2),
+                                        () {
+                                      setState(() {
+                                        _isCopy = false;
+                                      });
+                                    });
+                                  });
+                                },
+                                child: _isCopy
+                                    ? Icon(
+                                        Icons.check,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        size: 16,
+                                      )
+                                    : Icon(
+                                        Icons.content_paste,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .secondary,
+                                        size: 16,
+                                      ),
                               ),
                               const SizedBox(width: 8.0),
                               Icon(
-                                Icons.recommend,
+                                Icons.thumb_up_off_alt_outlined,
                                 color: Theme.of(context).colorScheme.secondary,
                                 size: 18,
                               ),
                               const SizedBox(width: 8.0),
                               Icon(
-                                Icons.recommend,
+                                Icons.thumb_down_off_alt_outlined,
                                 color: Theme.of(context).colorScheme.secondary,
                                 size: 18,
                               ),
