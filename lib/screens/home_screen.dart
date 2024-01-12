@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:learn/model/chat.dart';
 import 'package:learn/model/message.dart';
+import 'package:learn/providers/chat_provider.dart';
 import 'package:learn/screens/layout/drawer.dart';
 import 'package:learn/screens/layout/input_message.dart';
 import 'package:learn/screens/layout/message.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
@@ -19,7 +21,6 @@ class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   bool isSendMessage = false;
-  int chatId = 0;
 
   void _openDrawer() {
     _scaffoldKey.currentState?.openDrawer();
@@ -87,6 +88,8 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    int chatId = Provider.of<ChatProvider>(context, listen: true).chatId;
+
     Future<void> handleSendMessage(String message) async {
       try {
         setState(() {
@@ -100,12 +103,6 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     }
 
-    setChatId(int id) {
-      setState(() {
-        chatId = id;
-      });
-    }
-
     return Scaffold(
       key: _scaffoldKey,
       backgroundColor: Theme.of(context).colorScheme.background,
@@ -114,13 +111,12 @@ class _HomeScreenState extends State<HomeScreen> {
           handleSendMessage: (message) => handleSendMessage(message)),
       drawer: Drawer(
         child: DrawerUI(
-            name: widget.name,
-            listChat: listChat,
-            setChatId: (chatId) => setChatId(chatId)),
+          name: widget.name,
+          listChat: listChat,
+        ),
       ),
       body: SafeArea(
           child: Container(
-        // child: FormBuilder(
         padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
         child: Column(
           children: [
@@ -166,10 +162,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           ],
-          // )
         ),
       )),
     );
-    // Message(message: e)).toList()
   }
 }

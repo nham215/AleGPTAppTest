@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:learn/providers/chat_provider.dart';
 import 'package:learn/routes.dart';
 import 'package:learn/screens/home_screen.dart';
 import 'package:learn/screens/login_screen.dart';
@@ -13,8 +14,12 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  runApp(ChangeNotifierProvider(
-    create: (context) => ThemeProvider(),
+
+  runApp(MultiProvider(
+    providers: [
+      ChangeNotifierProvider(create: (_) => ThemeProvider()),
+      ChangeNotifierProvider(create: (_) => ChatProvider()),
+    ],
     child: const MyApp(),
   ));
 }
