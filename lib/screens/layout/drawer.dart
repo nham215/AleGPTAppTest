@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:learn/model/chat.dart';
 import 'package:learn/providers/chat_provider.dart';
+import 'package:learn/theme/theme.dart';
 import 'package:learn/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -23,22 +24,73 @@ class _DrawerUIState extends State<DrawerUI> {
   @override
   Widget build(BuildContext context) {
     int chatId = Provider.of<ChatProvider>(context, listen: false).chatId;
-    return Container(
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.onPrimary,
-      ),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 30),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          SizedBox(
-            child: Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(bottom: 20),
-                  child: ListTile(
+    bool isMode =
+        Provider.of<ThemeProvider>(context, listen: false).themeData ==
+            darkMode;
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      body: SafeArea(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+          child: Column(
+            children: [
+              Container(
+                margin: const EdgeInsets.only(bottom: 20),
+                child: ListTile(
+                  title: Text(
+                    widget.name,
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.secondary,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.0,
+                    ),
+                  ),
+                  leading: CircleAvatar(
+                    backgroundColor: Theme.of(context).colorScheme.secondary,
+                    child: Icon(
+                      Icons.android,
+                      color: Theme.of(context).colorScheme.background,
+                    ),
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: Column(
+                    children: widget.listChat.map((e) {
+                      return Container(
+                        decoration: BoxDecoration(
+                          color: chatId == e.id
+                              ? Theme.of(context).colorScheme.onBackground
+                              : null,
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: ListTile(
+                          onTap: () {
+                            Provider.of<ChatProvider>(context, listen: false)
+                                .setChatId(e.id!);
+                            Navigator.pop(context);
+                          },
+                          title: Text(
+                            e.name!,
+                            style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              ),
+              Column(
+                children: [
+                  ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 10, vertical: 10),
                     title: Text(
-                      widget.name,
+                      'Log out',
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                         fontWeight: FontWeight.bold,
@@ -46,133 +98,102 @@ class _DrawerUIState extends State<DrawerUI> {
                       ),
                     ),
                     leading: CircleAvatar(
-                      backgroundColor: Theme.of(context).colorScheme.secondary,
+                      backgroundColor:
+                          Theme.of(context).colorScheme.onBackground,
                       child: Icon(
-                        Icons.android,
-                        color: Theme.of(context).colorScheme.background,
+                        Icons.logout_outlined,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                     ),
+                    onTap: () async {
+                      await GoogleSignIn().signOut();
+                      FirebaseAuth.instance.signOut();
+                      // await Navigator.push(context,
+                      //     MaterialPageRoute(builder: (context) => const LoginScreen()));
+                    },
                   ),
-                ),
-                Column(
-                  children: widget.listChat.map((e) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: chatId == e.id
-                            ? Theme.of(context).colorScheme.onBackground
-                            : null,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: ListTile(
-                        onTap: () {
-                          Provider.of<ChatProvider>(context, listen: false)
-                              .setChatId(e.id!);
-                          Navigator.pop(context);
-                        },
-                        title: Text(
-                          e.name!,
+                  Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'Switch mode: ',
                           style: TextStyle(
                             color: Theme.of(context).colorScheme.secondary,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14.0,
                           ),
                         ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ],
-            ),
-          ),
-          Column(
-            children: [
-              ListTile(
-                contentPadding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                title: Text(
-                  'Log out',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.secondary,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18.0,
-                  ),
-                ),
-                leading: CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.onBackground,
-                  child: Icon(
-                    Icons.logout_outlined,
-                    color: Theme.of(context).colorScheme.secondary,
-                  ),
-                ),
-                onTap: () async {
-                  await GoogleSignIn().signOut();
-                  FirebaseAuth.instance.signOut();
-                  // await Navigator.push(context,
-                  //     MaterialPageRoute(builder: (context) => const LoginScreen()));
-                },
-              ),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Switch mode: ',
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.secondary,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 14.0,
-                      ),
-                    ),
-                    Row(
-                      children: [
-                        GestureDetector(
-                          onTap: () {
-                            Provider.of<ThemeProvider>(context, listen: false)
-                                .onLightMode();
-                          },
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color.fromRGBO(255, 255, 255, 0.1),
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Icon(
-                                Icons.light_mode_outlined,
-                                color: Theme.of(context).colorScheme.secondary,
+                        Row(
+                          children: [
+                            GestureDetector(
+                              onTap: () {
+                                if (isMode) {
+                                  Provider.of<ThemeProvider>(context,
+                                          listen: false)
+                                      .onLightMode();
+                                }
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: !isMode
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .onBackground
+                                      : null,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Icon(
+                                    Icons.light_mode_outlined,
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ),
-                        const SizedBox(
-                          width: 10,
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            Provider.of<ThemeProvider>(context, listen: false)
-                                .onDarkMode();
-                          },
-                          child: Container(
-                            decoration: const BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Color.fromRGBO(255, 255, 255, 0.1),
+                            const SizedBox(
+                              width: 10,
                             ),
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Icon(
-                                Icons.dark_mode_outlined,
-                                color: Theme.of(context).colorScheme.secondary,
+                            GestureDetector(
+                              onTap: () {
+                                if (!isMode) {
+                                  Provider.of<ThemeProvider>(context,
+                                          listen: false)
+                                      .onDarkMode();
+                                }
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: isMode
+                                      ? Theme.of(context)
+                                          .colorScheme
+                                          .onBackground
+                                      : null,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Icon(
+                                    Icons.dark_mode_outlined,
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),
-                  ],
-                ),
-              )
+                  )
+                ],
+              ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
