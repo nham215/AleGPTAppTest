@@ -6,6 +6,7 @@ import 'package:learn/screens/layout/drawer.dart';
 import 'package:learn/screens/layout/input_message.dart';
 import 'package:learn/screens/layout/message.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = '/home';
@@ -96,6 +97,11 @@ class _HomeScreenState extends State<HomeScreen> {
           isSendMessage = true;
         });
         await Future.delayed(const Duration(seconds: 2));
+        CollectionReference collRef =
+            FirebaseFirestore.instance.collection('message');
+        collRef.add({
+          'message': message,
+        });
       } finally {
         setState(() {
           isSendMessage = false;
@@ -135,7 +141,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Text(
-                    'Welcom to Mina!',
+                    'Mina GPT',
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                         fontSize: 20,
@@ -153,7 +159,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 scrollDirection: Axis.vertical,
                 child: Column(
                   children: chatId == 0
-                      ? [const Text('Welcome')]
+                      ? [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              const Text('How can I help you today?'),
+                              Icon(
+                                Icons.auto_fix_high_outlined,
+                                color: Theme.of(context).colorScheme.secondary,
+                                size: 24,
+                              ),
+                            ],
+                          ),
+                        ]
                       : listMessage
                           .where((e) => chatId == e.chatId)
                           .map((e) => Message(message: e))

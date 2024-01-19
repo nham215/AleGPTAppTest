@@ -6,6 +6,7 @@ import 'package:learn/providers/chat_provider.dart';
 import 'package:learn/theme/theme.dart';
 import 'package:learn/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DrawerUI extends StatefulWidget {
   final String name;
@@ -34,26 +35,53 @@ class _DrawerUIState extends State<DrawerUI> {
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
           child: Column(
             children: [
-              Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                child: ListTile(
-                  title: Text(
-                    widget.name,
-                    style: TextStyle(
-                      color: Theme.of(context).colorScheme.secondary,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.0,
-                    ),
+              ListTile(
+                title: Text(
+                  widget.name,
+                  style: TextStyle(
+                    color: Theme.of(context).colorScheme.secondary,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 18.0,
                   ),
-                  leading: CircleAvatar(
-                    backgroundColor: Theme.of(context).colorScheme.secondary,
-                    child: Icon(
-                      Icons.android,
-                      color: Theme.of(context).colorScheme.background,
-                    ),
+                ),
+                leading: CircleAvatar(
+                  backgroundColor: Theme.of(context).colorScheme.secondary,
+                  child: Icon(
+                    Icons.android,
+                    color: Theme.of(context).colorScheme.background,
                   ),
                 ),
               ),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 15),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.background,
+                  borderRadius: BorderRadius.circular(8.0),
+                ),
+                child: ListTile(
+                  onTap: () {
+                    CollectionReference collRef =
+                        FirebaseFirestore.instance.collection('chat');
+                    // collRef.add({
+                    //   'Name': 'New chatqwqw',
+                    //   'userId': 112,
+                    // });
+                    Provider.of<ChatProvider>(context, listen: false)
+                        .setChatId(0);
+                    Navigator.pop(context);
+                  },
+                  title: Text(
+                    'New chat',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.secondary,
+                    ),
+                  ),
+                  leading: const Icon(Icons.add),
+                ),
+              ),
+              // StreamBuilder<QuerySnapshot>(
+              //     stream: FirebaseFirestore.instance.collection('chat').snapshots(),
+              //     builder: builder),
               Expanded(
                 child: SingleChildScrollView(
                   scrollDirection: Axis.vertical,
@@ -87,8 +115,7 @@ class _DrawerUIState extends State<DrawerUI> {
               Column(
                 children: [
                   ListTile(
-                    contentPadding: const EdgeInsets.symmetric(
-                        horizontal: 10, vertical: 10),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 10),
                     title: Text(
                       'Log out',
                       style: TextStyle(
