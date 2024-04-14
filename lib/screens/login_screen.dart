@@ -3,11 +3,11 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:learn/controllers/user_controller.dart';
 import 'package:learn/helpers/loading.dart';
-import 'package:learn/model/account.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 class LoginScreen extends StatefulWidget {
   static const routeName = '/login';
@@ -22,12 +22,16 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormBuilderState>();
   final _emailFieldKey = GlobalKey<FormBuilderFieldState>();
   final _passwordFieldKey = GlobalKey<FormBuilderFieldState>();
-  bool _isLoading = false;
+  bool _loadingLogin = false;
+  bool _loadingLoginGoogle = false;
+  bool _enable = true;
   bool remember = true;
   String errorMessage = '';
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   AutovalidateMode autoValidate = AutovalidateMode.onUserInteraction;
+
+  final userController = UserController();
 
   @override
   void dispose() {
@@ -35,9 +39,6 @@ class _LoginScreenState extends State<LoginScreen> {
     passwordController.dispose();
     super.dispose();
   }
-
-  Account myAccount =
-      Account(id: 1, email: 'trongnham2003@gmail.com', password: '123123');
 
   @override
   Widget build(BuildContext context) {
@@ -50,37 +51,31 @@ class _LoginScreenState extends State<LoginScreen> {
           });
           return;
         }
-        // setState(() {
-        //   _isLoading = true;
-        // });
-        await Future.delayed(const Duration(seconds: 3));
-        if (emailController.text == myAccount.email &&
-            passwordController.text == myAccount.password) {
-          Fluttertoast.showToast(
-            msg: 'Login Success',
-            toastLength: Toast.LENGTH_SHORT,
-            backgroundColor: const Color.fromARGB(255, 237, 94, 84),
-            textColor: Colors.white,
-            webPosition: 'top',
-          );
-          if (!mounted) return;
-          // await Navigator.push(
-          //     context,
-          //     MaterialPageRoute(
-          //         builder: (context) => const HomeScreen(name: 'Nham 215')));
-        } else {
-          Fluttertoast.showToast(
-            msg: 'Email has not been register!!',
-            toastLength: Toast.LENGTH_SHORT,
-            backgroundColor: Colors.amber,
-            textColor: Colors.white,
-            gravity: ToastGravity.TOP,
-            timeInSecForIosWeb: 5,
-          );
-        }
+        setState(() {
+          _loadingLogin = true;
+          _enable = false;
+        });
+        await userController
+            .login(emailController.text, passwordController.text)
+            .then((value) => Fluttertoast.showToast(
+                  msg: value,
+                  toastLength: Toast.LENGTH_SHORT,
+                  backgroundColor: const Color.fromARGB(255, 237, 94, 84),
+                  textColor: Colors.white,
+                  webPosition: 'top',
+                ))
+            .catchError((error) => Fluttertoast.showToast(
+                  msg: 'Email is invalid. Please try again!',
+                  toastLength: Toast.LENGTH_SHORT,
+                  backgroundColor: Colors.amber,
+                  textColor: Colors.white,
+                  gravity: ToastGravity.TOP,
+                  timeInSecForIosWeb: 5,
+                ));
       } finally {
         setState(() {
-          _isLoading = false;
+          _loadingLogin = false;
+          _enable = true;
         });
       }
     }
@@ -88,7 +83,8 @@ class _LoginScreenState extends State<LoginScreen> {
     signInWithGoogle() async {
       try {
         setState(() {
-          _isLoading = true;
+          _loadingLoginGoogle = true;
+          _enable = false;
         });
         GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
         GoogleSignInAuthentication? googleAuth =
@@ -102,7 +98,8 @@ class _LoginScreenState extends State<LoginScreen> {
         await FirebaseAuth.instance.signInWithCredential(credential);
       } finally {
         setState(() {
-          _isLoading = false;
+          _loadingLoginGoogle = false;
+          _enable = true;
         });
       }
     }
@@ -113,7 +110,7 @@ class _LoginScreenState extends State<LoginScreen> {
           child: SingleChildScrollView(
             physics: const BouncingScrollPhysics(),
             child: FormBuilder(
-                enabled: !_isLoading,
+                enabled: _enable,
                 onChanged: () {
                   if (errorMessage.isNotEmpty) {
                     setState(() {
@@ -126,7 +123,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     Container(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 45, horizontal: 30),
+                          vertical: 5, horizontal: 30),
                       child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -308,8 +305,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    _isLoading
-                                        ? const LoadingUI()
+                                    _loadingLoginGoogle
+                                        ? const LoadingScreen()
                                         : Image.asset(
                                             'assets/images/google.png',
                                             height: 24,
@@ -373,20 +370,22 @@ class _LoginScreenState extends State<LoginScreen> {
                               height: 45,
                               margin: const EdgeInsets.symmetric(vertical: 35),
                               child: OutlinedButton(
-                                onPressed: _isLoading ? null : handleLogin,
+                                onPressed: _loadingLogin ? null : handleLogin,
                                 style: OutlinedButton.styleFrom(
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(8.0),
                                   ),
                                   backgroundColor: const Color(0xFF1E8F8E),
                                 ),
-                                child: const Text(
-                                  'Login',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 16,
-                                  ),
-                                ),
+                                child: _loadingLogin
+                                    ? const LoadingScreen()
+                                    : const Text(
+                                        'Login',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                      ),
                               ),
                             ),
                             Container(
