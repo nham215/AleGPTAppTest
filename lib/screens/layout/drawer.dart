@@ -6,7 +6,7 @@ import 'package:learn/providers/chat_provider.dart';
 import 'package:learn/theme/theme.dart';
 import 'package:learn/theme/theme_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 
 class DrawerUI extends StatefulWidget {
   final String name;
@@ -60,8 +60,8 @@ class _DrawerUIState extends State<DrawerUI> {
                 ),
                 child: ListTile(
                   onTap: () {
-                    CollectionReference collRef =
-                        FirebaseFirestore.instance.collection('chat');
+                    // CollectionReference collRef =
+                    //     FirebaseFirestore.instance.collection('chat');
                     // collRef.add({
                     //   'Name': 'New chatqwqw',
                     //   'userId': 112,
